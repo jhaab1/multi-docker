@@ -17,10 +17,10 @@ after-success:
   - docker build -t jhaab/multi-worker ./worker
 
 # Now login to Docker HUB
-  - echo "$DOCKER_PASSWORD" | login -u "$DOCKER_ID" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
 # Once logged in, push all images to Docker HUB
   - docker push jhaab/multi-client 
   - docker push jhaab/multi-nginx
   - docker push jhaab/multi-server
-  - docker push jhaab/docker-worker
+  - docker push jhaab/multi-worker
