@@ -1,0 +1,26 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  docker build -t jhaab/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true jhaab/react-test npm run test
+
+# After test is successfull, run below scripts to create PROD images
+after-success:
+  - docker build -t jhaab/multi-client ./client
+  - docker build -t jhaab/multi-nginx ./nginx
+  - docker build -t jhaab/multi-server ./server
+  - docker build -t jhaab/multi-worker ./worker
+
+# Now login to Docker HUB
+  - echo "$DOCKER_PASSWORD" | login -u "$DOCKER_ID" --password-stdin
+
+# Once logged in, push all images to Docker HUB
+  - docker push jhaab/multi-client 
+  - docker push jhaab/multi-nginx
+  - docker push jhaab/multi-server
+  - docker push jhaab/docker-worker
